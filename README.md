@@ -4,15 +4,15 @@
 This is a Streamlit application that enables a conversational chatbot experience over the content of user-uploaded PDF files. It uses a Retrieval Augmented Generation (RAG) architecture, allowing the chatbot to answer questions based on the uploaded documents while maintaining chat history.
 
 ## Features
-PDF File Uploader: Users can upload one or more PDF documents to serve as the knowledge base.
+### PDF File Uploader: Users can upload one or more PDF documents to serve as the knowledge base.
 
-Conversational Memory: The chatbot maintains a chat history, allowing it to understand and respond to follow-up questions with context.
+### Conversational Memory: The chatbot maintains a chat history, allowing it to understand and respond to follow-up questions with context.
 
-Groq LLM Integration: Uses the high-speed Groq API for powerful and low-latency responses.
+### Groq LLM Integration: Uses the high-speed Groq API for powerful and low-latency responses.
 
-Local Vector Store: Utilizes ChromaDB to create and manage the vector database from document content on the fly.
+### Local Vector Store: Utilizes ChromaDB to create and manage the vector database from document content on the fly.
 
-Hugging Face Embeddings: Embeds the document content using a Hugging Face model for efficient similarity search.
+### Hugging Face Embeddings: Embeds the document content using a Hugging Face model for efficient similarity search.
 
 ## Getting Started
 Prerequisites
