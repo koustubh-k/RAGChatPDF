@@ -15,4 +15,5 @@ chromadb
 faiss-cpu
 streamlit
 sentence-transformers
+pysqlite3-binary
 pypdf
