@@ -45,10 +45,9 @@ def get_embeddings():
     return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 @st.cache_resource
-def create_vector_embedding(files, embeddings_model):
+def create_vector_embedding(files, _embeddings_model):  # <-- ADDED UNDERSCORE HERE
     """Loads, splits, and creates a FAISS vector store from uploaded PDFs."""
     documents = []
-    # Use a temporary directory for uploaded files to avoid overwriting
     with tempfile.TemporaryDirectory() as temp_dir:
         for uploaded_file in files:
             temp_path = os.path.join(temp_dir, uploaded_file.name)
@@ -68,7 +67,7 @@ def create_vector_embedding(files, embeddings_model):
         st.error("No document chunks could be created. Please check the content of the PDF.")
         return None
 
-    return FAISS.from_documents(documents=splits, embedding=embeddings_model)
+    return FAISS.from_documents(documents=splits, embedding=_embeddings_model) # <-- USE THE NEW PARAMETER NAME HERE
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     """Manages chat history for a session."""
@@ -83,33 +82,25 @@ if "store" not in st.session_state:
 
 uploaded_files = st.file_uploader("Choose a PDF file", type="pdf", accept_multiple_files=True)
 
-# User experience flow: only show chat once PDFs are uploaded and processed
 if uploaded_files:
-    # Use a button to trigger the expensive vector store creation
     if st.button("Process Documents"):
         st.session_state.vectorstore = create_vector_embedding(uploaded_files, get_embeddings())
         if st.session_state.vectorstore:
             st.success("Documents processed and ready for Q&A!")
-            # Clear chat history on new document upload to avoid confusion
             st.session_state.store[session_id] = ChatMessageHistory()
             st.session_state.chat_messages = []
 
-# Initialize chat messages for display
 if "chat_messages" not in st.session_state:
     st.session_state.chat_messages = []
 
-# Display old messages
 for message in st.session_state.chat_messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-# User input and chat logic
 if st.session_state.get("vectorstore"):
-    # Define the full RAG chain (this part is now outside the uploaded_files block)
     llm = get_llm(api_key)
     retriever = st.session_state.vectorstore.as_retriever()
     
-    # Prompts for conversational RAG
     contextualize_q_prompt = ChatPromptTemplate.from_messages([
         ("system", "Given a chat history and the latest user question which might reference context in the chat history, formulate a standalone question which can be understood without the chat history. Do NOT answer the question, just reformulate it if needed and otherwise return it as is."),
         MessagesPlaceholder("chat_history"),
@@ -136,12 +127,10 @@ if st.session_state.get("vectorstore"):
 
     user_input = st.chat_input("Ask a question about the document:")
     if user_input:
-        # Display user message
         st.session_state.chat_messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.write(user_input)
         
-        # Get and display assistant response
         with st.chat_message("assistant"):
             with st.spinner("Retrieving and generating..."):
                 response = conversational_rag_chain.invoke(
