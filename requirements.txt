@@ -11,9 +11,9 @@ langchain-ollama  # If you are using Ollama, otherwise remove
 
 # --- Vector Store & Dependencies (Choose ONE) ---
 # OPTION 1: For using ChromaDB
-# langchain-chroma>=0.0.9
-# chromadb>=0.4.22
-# pysqlite3-binary  # Resolves the sqlite3 dependency issue
+langchain-chroma>=0.0.9
+chromadb>=0.4.22
+pysqlite3-binary  # Resolves the sqlite3 dependency issue
 
 # OPTION 2: For using FAISS
 faiss-cpu
@@ -25,4 +25,4 @@ beautifulsoup4  # Used for WebBaseLoader in some RAG examples
 
 # --- Utilities ---
 python-dotenv
-sentence-transformers==2.2.2  # Pinned to a known stable version
+sentence-transformers # Pinned to a known stable version
